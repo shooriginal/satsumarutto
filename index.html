@@ -223,7 +223,7 @@
   </section>
 
   <section>
-    <div class="sec-head"><h2>新着情報</h2><a href="#">一覧を見る</a></div>
+    <div class="sec-head"><h2>新着情報</h2><a href="news.html">一覧を見る</a></div>
     <div class="note" style="margin-bottom:12px;">※ タブを切り替えると、該当タグを持たない記事は薄く表示される想定（実装ではフィルタ表示）。「住民投稿」バッジ付きは寄稿記事。</div>
 
     <div id="feed">
@@ -368,15 +368,14 @@
 
 <script>
   const nav = document.getElementById('audienceNav');
-  const feedItems = document.querySelectorAll('#feed .feed-item');
   nav.addEventListener('click', (e)=>{
     const btn = e.target.closest('button');
     if(!btn) return;
     nav.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     const a = btn.dataset.a;
-    feedItems.forEach(item=>{
-      const tags = item.dataset.tags.split(' ');
+    document.querySelectorAll('#feed .feed-item').forEach(item=>{
+      const tags = (item.dataset.tags || '').split(' ');
       item.classList.toggle('dim', !tags.includes(a));
     });
   });
@@ -387,15 +386,15 @@
     });
   });
 </script>
-   <script>
-  const TAG_LABELS = { resident: '住民', migrant: '移住検討者', tourism: '観光', neighbor: '近隣自治体' };
 
+<script>
+  const TAG_LABELS = { resident: '住民', migrant: '移住検討者', tourism: '観光', neighbor: '近隣自治体' };
   fetch('./data/news.json')
     .then(res => res.json())
     .then(items => {
       if (!items.length) return;
       const feed = document.getElementById('feed');
-      feed.innerHTML = items.map(item => `
+      feed.innerHTML = items.slice(0, 6).map(item => `
         <div class="feed-item" data-tags="${(item.tags || []).join(' ')}">
           <div class="thumb">📰</div>
           <div class="feed-body">
@@ -410,5 +409,6 @@
     })
     .catch(err => console.log('新着情報の取得に失敗しました', err));
 </script>
+
 </body>
 </html>
