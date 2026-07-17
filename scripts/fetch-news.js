@@ -35,7 +35,6 @@ async function main() {
     newItems.push({ title: cleanTitle, link: link.trim(), pubDate: pubDate.trim(), tags: detectTags(cleanTitle) });
   }
 
-  // 既存のアーカイブを読み込んで、新しい記事とマージ（同じlinkは新しい内容で上書き）
   const dataPath = 'data/news.json';
   let archive = [];
   if (fs.existsSync(dataPath)) {
@@ -47,12 +46,14 @@ async function main() {
 
   let merged = Array.from(byLink.values());
   merged.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-  merged = merged.slice(0, 200); // 際限なく増えないよう上限200件
+  merged = merged.slice(0, 200);
 
   fs.mkdirSync('data', { recursive: true });
   fs.writeFileSync(dataPath, JSON.stringify(merged, null, 2));
   console.log(`アーカイブ件数: ${merged.length}（今回取得: ${newItems.length}）`);
 }
+
+main().catch(err => { console.error(err); process.exit(1); });
 
 main().catch(err => { console.error(err); process.exit(1); });
 main().catch(err => { console.error(err); process.exit(1); });
