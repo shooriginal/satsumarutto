@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新着情報一覧｜さつまみっけ（仮称）</title>
+<style>
+  :root{--resident:#2E7D5B;--migrant:#2A5CAA;--tourism:#D9822B;--neighbor:#7B4B94;--ink:#2B2B2B;--sub:#6B6B6B;--line:#B7B7B2;--bg:#F5F5F2;--card:#FFFFFF;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Yu Gothic",sans-serif;}
+  .wrap{max-width:800px;margin:0 auto;padding:24px 20px 60px;}
+  a.back{font-size:13px;color:var(--sub);text-decoration:none;border-bottom:1px dashed var(--line);}
+  h1{font-size:20px;margin:20px 0 4px;}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 20px;}
+  .filters button{padding:6px 14px;border-radius:20px;border:1px solid var(--line);background:#fff;font-size:12.5px;cursor:pointer;}
+  .filters button.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .tag{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:10px;color:#fff;margin-right:4px;}
+  .tag.resident{background:var(--resident);} .tag.migrant{background:var(--migrant);} .tag.tourism{background:var(--tourism);} .tag.neighbor{background:var(--neighbor);}
+  .feed-item{display:flex;gap:12px;background:var(--card);border:1px solid #e5e5e2;border-radius:6px;padding:12px;margin-bottom:10px;}
+  .thumb{width:48px;height:48px;flex:none;display:flex;align-items:center;justify-content:center;font-size:20px;}
+  .feed-body .date{font-size:11px;color:var(--sub);margin-bottom:3px;}
+  .feed-body h4{font-size:13.5px;margin:0;line-height:1.4;}
+  .feed-body h4 a{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← トップに戻る</a>
+  <h1>新着情報 一覧</h1>
+  <div class="filters" id="filters">
+    <button data-a="all" class="active">すべて</button>
+    <button data-a="resident">住民</button>
+    <button data-a="migrant">移住検討者</button>
+    <button data-a="tourism">観光</button>
+    <button data-a="neighbor">近隣自治体</button>
+  </div>
+  <div id="feed">読み込み中...</div>
+</div>
+<script>
+  const TAG_LABELS = { resident: '住民', migrant: '移住検討者', tourism: '観光', neighbor: '近隣自治体' };
+  let allItems = [];
+  function render(filter) {
+    const feed = document.getElementById('feed');
+    const items = filter === 'all' ? allItems : allItems.filter(i => (i.tags||[]).includes(filter));
+    if (!items.length) { feed.innerHTML = '<p>該当する記事がありません。</p>'; return; }
+    feed.innerHTML = items.map(item => `
+      <div class="feed-item">
+        <div class="thumb">📰</div>
+        <div class="feed-body">
+          <div class="date">${item.pubDate ? new Date(item.pubDate).toLocaleDateString('ja-JP') : ''} ${(item.tags||[]).map(t => `<span class="tag ${t}">${TAG_LABELS[t]||t}</span>`).join('')}</div>
+          <h4><a href="${item.link}" target="_blank" rel="noopener">${item.title}</a></h4>
+        </div>
+      </div>`).join('');
+  }
+  fetch('./data/news.json').then(res => res.json()).then(items => { allItems = items; render('all'); })
+    .catch(() => { document.getElementById('feed').innerHTML = '<p>読み込みに失敗しました。</p>'; });
+  document.getElementById('filters').addEventListener('click', e => {
+    const btn = e.target.closest('button'); if (!btn) return;
+    document.querySelectorAll('#filters button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); render(btn.dataset.a);
+  });
+</script>
+</body>
+</html>
