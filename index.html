@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>さつまみっけ（仮称）｜トップページ ワイヤーフレーム</title>
+<style>
+  :root{
+    --resident:#2E7D5B;      /* 住民 */
+    --migrant:#2A5CAA;       /* 移住検討者 */
+    --tourism:#D9822B;       /* 観光 */
+    --neighbor:#7B4B94;      /* 近隣自治体 */
+    --ink:#2B2B2B;
+    --sub:#6B6B6B;
+    --line:#B7B7B2;
+    --bg:#F5F5F2;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Hiragino Sans","Yu Gothic",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .note{
+    font-size:11.5px; color:var(--sub); font-style:italic; line-height:1.5;
+    border-left:3px dashed var(--line); padding:4px 10px; margin:6px 0 0;
+    background:repeating-linear-gradient(135deg,#fff,#fff 8px,#f0f0ee 8px,#f0f0ee 16px);
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:0 20px;}
+
+  /* --- 注釈バー --- */
+  .devbar{
+    background:#222; color:#eee; font-size:12px; text-align:center; padding:6px;
+    letter-spacing:.02em;
+  }
+
+  /* --- ヘッダー --- */
+  header{background:var(--card); border-bottom:1px solid var(--line);}
+  .headrow{display:flex; align-items:center; justify-content:space-between; padding:14px 0;}
+  .logo{display:flex; align-items:center; gap:10px;}
+  .logo .mark{
+    width:40px;height:40px;border-radius:50%;
+    background:conic-gradient(var(--resident) 0 25%, var(--migrant) 0 50%, var(--tourism) 0 75%, var(--neighbor) 0 100%);
+    border:2px dashed var(--line);
+  }
+  .logo .name{font-size:19px; font-weight:700;}
+  .logo .name span{font-size:11px; font-weight:400; color:var(--sub); display:block;}
+  nav.util{display:flex; gap:16px; font-size:13px;}
+  nav.util a{color:var(--ink); text-decoration:none; border-bottom:1px dashed var(--line); padding-bottom:2px;}
+
+  .audience-nav{display:flex; border-top:1px dashed var(--line);}
+  .audience-nav button{
+    flex:1; padding:10px 6px; border:none; background:var(--card);
+    border-right:1px dashed var(--line); cursor:pointer; font-size:13px; font-weight:600;
+    color:var(--ink); display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .audience-nav button:last-child{border-right:none;}
+  .audience-nav button .dot{width:9px;height:9px;border-radius:50%;}
+  .audience-nav button.active{background:#eee;}
+  .audience-nav button[data-a="resident"] .dot{background:var(--resident);}
+  .audience-nav button[data-a="migrant"] .dot{background:var(--migrant);}
+  .audience-nav button[data-a="tourism"] .dot{background:var(--tourism);}
+  .audience-nav button[data-a="neighbor"] .dot{background:var(--neighbor);}
+
+  /* --- ヒーロー --- */
+  .hero{padding:26px 0 10px;}
+  .hero h1{font-size:22px; margin:0 0 4px; line-height:1.5;}
+  .hero p.lead{color:var(--sub); font-size:13.5px; margin:0 0 16px;}
+  .entry-cards{display:grid; grid-template-columns:repeat(4,1fr); gap:12px;}
+  .entry-card{
+    background:var(--card); border:1px dashed var(--line); border-radius:6px;
+    padding:16px 10px; text-align:center; cursor:pointer; transition:transform .1s;
+  }
+  .entry-card:hover{transform:translateY(-2px);}
+  .entry-card .icon{
+    width:44px;height:44px;border-radius:50%;margin:0 auto 8px;
+    display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;
+  }
+  .entry-card[data-a="resident"] .icon{background:var(--resident);}
+  .entry-card[data-a="migrant"] .icon{background:var(--migrant);}
+  .entry-card[data-a="tourism"] .icon{background:var(--tourism);}
+  .entry-card[data-a="neighbor"] .icon{background:var(--neighbor);}
+  .entry-card h3{font-size:13.5px; margin:0 0 4px;}
+  .entry-card p{font-size:11px; color:var(--sub); margin:0;}
+
+  section{padding:26px 0; border-bottom:1px dashed var(--line);}
+  .sec-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px;}
+  .sec-head h2{font-size:16px; margin:0; display:flex; align-items:center; gap:8px;}
+  .sec-head h2:before{content:""; width:5px; height:16px; background:var(--ink); display:inline-block;}
+  .sec-head a{font-size:12px; color:var(--sub); text-decoration:none; border-bottom:1px dashed var(--line);}
+
+  /* --- タグチップ --- */
+  .tag{
+    display:inline-block; font-size:10.5px; padding:2px 7px; border-radius:10px;
+    color:#fff; margin-right:4px;
+  }
+  .tag.resident{background:var(--resident);}
+  .tag.migrant{background:var(--migrant);}
+  .tag.tourism{background:var(--tourism);}
+  .tag.neighbor{background:var(--neighbor);}
+  .tag.ugc{background:#fff; color:var(--ink); border:1px solid var(--ink);}
+
+  /* --- 新着フィード --- */
+  .feed-item{
+    display:flex; gap:12px; background:var(--card); border:1px solid #e5e5e2;
+    border-radius:6px; padding:12px; margin-bottom:10px; align-items:flex-start;
+  }
+  .feed-item.dim{opacity:.28;}
+  .thumb{
+    width:64px; height:64px; flex:none; background:#e2e2de; border:1px dashed var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--sub); border-radius:4px;
+  }
+  .feed-body .date{font-size:11px; color:var(--sub); margin-bottom:3px;}
+  .feed-body h4{font-size:13.5px; margin:0 0 5px; line-height:1.4;}
+
+  /* --- カレンダー --- */
+  .cal-wrap{display:flex; gap:20px; flex-wrap:wrap;}
+  .calendar{
+    flex:1; min-width:280px; background:var(--card); border:1px solid #e5e5e2; border-radius:6px; padding:14px;
+  }
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-top:8px;}
+  .cal-grid .d{
+    aspect-ratio:1; border:1px solid #eee; border-radius:4px; font-size:10.5px; padding:3px;
+    position:relative; color:var(--sub);
+  }
+  .cal-grid .d .ev{width:6px;height:6px;border-radius:50%; position:absolute; bottom:3px;}
+  .cal-legend{min-width:170px; font-size:12px; color:var(--sub);}
+  .cal-legend div{display:flex; align-items:center; gap:6px; margin-bottom:6px;}
+  .cal-legend .dot{width:8px;height:8px;border-radius:50%;}
+
+  /* --- 投稿バナー --- */
+  .contribute{
+    background:#fffdf7; border:1px dashed #C9A227; border-radius:8px; padding:22px;
+  }
+  .contribute h2{margin:0 0 6px; font-size:17px;}
+  .contribute p{font-size:13px; color:var(--sub); margin:0 0 16px;}
+  .contribute-btns{display:flex; gap:12px; margin-bottom:20px;}
+  .cbtn{
+    flex:1; padding:12px; text-align:center; border-radius:6px; font-size:13px; font-weight:700;
+    border:1px solid var(--ink); cursor:pointer;
+  }
+  .cbtn.light{background:#fff;}
+  .cbtn.solid{background:var(--ink); color:#fff;}
+  .flow{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+  .flow .step{
+    flex:1; min-width:120px; background:#fff; border:1px solid #ddd; border-radius:6px;
+    padding:10px; font-size:11.5px; text-align:center;
+  }
+  .flow .step b{display:block; font-size:12.5px; margin-bottom:3px;}
+  .flow .arrow{color:var(--sub); font-size:16px;}
+
+  /* --- カテゴリ入口 --- */
+  .cat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  .cat-item{
+    background:var(--card); border:1px solid #e5e5e2; border-radius:6px; padding:14px 8px;
+    text-align:center; font-size:12.5px;
+  }
+  .cat-item .ic{font-size:20px; margin-bottom:6px;}
+
+  /* --- SNS --- */
+  .sns-row{display:flex; gap:14px;}
+  .sns-box{
+    flex:1; background:var(--card); border:1px dashed var(--line); border-radius:6px;
+    padding:16px; font-size:12px; color:var(--sub); text-align:center;
+  }
+  .hashtag{
+    display:inline-block; margin-top:8px; font-weight:700; color:var(--ink); font-size:14px;
+  }
+
+  footer{padding:26px 0 50px; font-size:12px; color:var(--sub);}
+  .foot-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px;}
+  .foot-grid h5{font-size:12.5px; color:var(--ink); margin:0 0 8px;}
+  .foot-grid a{display:block; color:var(--sub); text-decoration:none; margin-bottom:6px;}
+
+  @media (max-width:720px){
+    .entry-cards, .cat-grid, .foot-grid{grid-template-columns:repeat(2,1fr);}
+    .audience-nav{flex-wrap:wrap;}
+    .audience-nav button{flex:1 1 50%;}
+    .sns-row{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="devbar">🖊 これは構成検討用のワイヤーフレームです（配色・文言はイメージ／実データではありません）</div>
+
+<header>
+  <div class="wrap headrow">
+    <div class="logo">
+      <div class="mark"></div>
+      <div class="name">さつまみっけ（仮称）<span>さつま町 地域情報サイト構想</span></div>
+    </div>
+    <nav class="util">
+      <a href="#">投稿する</a>
+      <a href="#">マップ</a>
+      <a href="#">検索</a>
+    </nav>
+  </div>
+  <div class="wrap">
+    <div class="audience-nav" id="audienceNav">
+      <button data-a="resident" class="active"><span class="dot"></span>住民の方へ</button>
+      <button data-a="migrant"><span class="dot"></span>移住を考えている方へ</button>
+      <button data-a="tourism"><span class="dot"></span>観光で来られる方へ</button>
+      <button data-a="neighbor"><span class="dot"></span>近隣自治体の方へ</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="note">※ 上部タブは「対象者別の入口」。裏側の記事データベースは1本で、各記事に住民／移住検討者／観光／近隣自治体の複数タグを付与し、タブに応じて表示を絞り込む設計（下の新着フィードで動作イメージを再現）。</div>
+
+  <section class="hero" style="border-bottom:none;">
+    <h1>さつま町の"いま"が、まるごと届く。</h1>
+    <p class="lead">公式のお知らせも、住民のみなさんの発信も、ひとつの場所に。</p>
+    <div class="entry-cards">
+      <div class="entry-card" data-a="resident"><div class="icon">🏠</div><h3>住民の方へ</h3><p>くらし・お知らせ・地域行事</p></div>
+      <div class="entry-card" data-a="migrant"><div class="icon">🧳</div><h3>移住を考えている方へ</h3><p>制度・暮らしの体験談</p></div>
+      <div class="entry-card" data-a="tourism"><div class="icon">♨️</div><h3>観光で来られる方へ</h3><p>温泉・自然・グルメ</p></div>
+      <div class="entry-card" data-a="neighbor"><div class="icon">🤝</div><h3>近隣自治体の方へ</h3><p>広域連携・相互情報</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>新着情報</h2><a href="#">一覧を見る</a></div>
+    <div class="note" style="margin-bottom:12px;">※ タブを切り替えると、該当タグを持たない記事は薄く表示される想定（実装ではフィルタ表示）。「住民投稿」バッジ付きは寄稿記事。</div>
+
+    <div id="feed">
+      <div class="feed-item" data-tags="resident tourism">
+        <div class="thumb">画像</div>
+        <div class="feed-body">
+          <div class="date">2026.07.16　<span class="tag resident">住民</span><span class="tag tourism">観光</span></div>
+          <h4>今年のホタル舟、運航スケジュールが決まりました</h4>
+        </div>
+      </div>
+      <div class="feed-item" data-tags="resident">
+        <div class="thumb">画像</div>
+        <div class="feed-body">
+          <div class="date">2026.07.15　<span class="tag resident">住民</span></div>
+          <h4>【お知らせ】ごみ収集日カレンダーが一部変更になります</h4>
+        </div>
+      </div>
+      <div class="feed-item" data-tags="migrant">
+        <div class="thumb">画像</div>
+        <div class="feed-body">
+          <div class="date">2026.07.15　<span class="tag migrant">移住検討者</span></div>
+          <h4>移住体験住宅「さつま体験宿」の7〜9月空き状況を更新</h4>
+        </div>
+      </div>
+      <div class="feed-item" data-tags="neighbor tourism">
+        <div class="thumb">画像</div>
+        <div class="feed-body">
+          <div class="date">2026.07.14　<span class="tag neighbor">近隣自治体</span><span class="tag tourism">観光</span></div>
+          <h4>薩摩川内市・長島町と合同の広域観光スタンプラリー開催</h4>
+        </div>
+      </div>
+      <div class="feed-item" data-tags="resident tourism">
+        <div class="thumb">画像</div>
+        <div class="feed-body">
+          <div class="date">2026.07.13　<span class="tag resident">住民</span><span class="tag tourism">観光</span><span class="tag ugc">住民投稿</span></div>
+          <h4>宮之城温泉近くではじまった「日曜朝市」に行ってきました</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>イベントカレンダー</h2><a href="#">全て見る</a></div>
+    <div class="note" style="margin-bottom:12px;">※ 行政発表イベント＋住民投稿イベントを統合表示。色でどの対象向けか判別できるようにする案。</div>
+    <div class="cal-wrap">
+      <div class="calendar">
+        <b style="font-size:13px;">2026年7月</b>
+        <div class="cal-grid">
+          <!-- simplified 28-cell mock calendar -->
+          <div class="d">1</div><div class="d">2</div><div class="d">3</div><div class="d">4<span class="ev" style="background:var(--resident)"></span></div><div class="d">5</div><div class="d">6</div><div class="d">7</div>
+          <div class="d">8</div><div class="d">9</div><div class="d">10</div><div class="d">11</div><div class="d">12<span class="ev" style="background:var(--tourism)"></span></div><div class="d">13</div><div class="d">14<span class="ev" style="background:var(--neighbor)"></span></div>
+          <div class="d">15</div><div class="d">16</div><div class="d">17<span class="ev" style="background:var(--resident)"></span></div><div class="d">18<span class="ev" style="background:var(--tourism)"></span></div><div class="d">19<span class="ev" style="background:var(--tourism)"></span></div><div class="d">20</div><div class="d">21</div>
+          <div class="d">22</div><div class="d">23</div><div class="d">24</div><div class="d">25</div><div class="d">26<span class="ev" style="background:var(--migrant)"></span></div><div class="d">27</div><div class="d">28</div>
+        </div>
+      </div>
+      <div class="cal-legend">
+        <div><span class="dot" style="background:var(--resident)"></span>住民行事・お知らせ</div>
+        <div><span class="dot" style="background:var(--migrant)"></span>移住相談会・見学会</div>
+        <div><span class="dot" style="background:var(--tourism)"></span>観光・季節イベント</div>
+        <div><span class="dot" style="background:var(--neighbor)"></span>近隣自治体合同企画</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="contribute">
+      <h2>あなたのまちの"今"を教えてください</h2>
+      <p>ホームページを持っていないお店・団体・個人の方も歓迎。いただいた情報はAIによる一次チェックのあと、運営が確認して掲載します。</p>
+      <div class="contribute-btns">
+        <div class="cbtn light">まちの話題を投稿する<br><span style="font-weight:400;font-size:11px;color:var(--sub);">ニックネームOK・写真1枚から</span></div>
+        <div class="cbtn solid">イベントを掲載する<br><span style="font-weight:400;font-size:11px;color:#ccc;">日時・会場など詳細項目あり</span></div>
+      </div>
+      <div class="note" style="margin-bottom:10px;">※ ぽけろーかるの「まち情報」「イベント告知」の2フォーム構成を踏襲。以下は投稿〜公開までの流れの見せ方案：</div>
+      <div class="flow">
+        <div class="step"><b>①投稿</b>フォーム送信</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>②AIチェック</b>NGワード・個人情報・著作権を自動判定</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>③振り分け</b>低リスクは自動で公開待ちへ／要確認は運営へ</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>④公開</b>運営の最終確認後、サイトに反映</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>カテゴリから探す</h2></div>
+    <div class="cat-grid">
+      <div class="cat-item"><div class="ic">🍡</div>お店・グルメ</div>
+      <div class="cat-item"><div class="ic">♨️</div>温泉・観光スポット</div>
+      <div class="cat-item"><div class="ic">🏡</div>空き家・住まい</div>
+      <div class="cat-item"><div class="ic">👶</div>子育て・教育</div>
+      <div class="cat-item"><div class="ic">📋</div>行政手続き</div>
+      <div class="cat-item"><div class="ic">📅</div>イベントカレンダー</div>
+      <div class="cat-item"><div class="ic">💬</div>移住相談窓口</div>
+      <div class="cat-item"><div class="ic">🗺️</div>近隣自治体リンク</div>
+    </div>
+  </section>
+
+  <section style="border-bottom:none;">
+    <div class="sec-head"><h2>SNSでも発信中</h2></div>
+    <div class="sns-row">
+      <div class="sns-box">X（旧Twitter）埋め込み想定<div class="hashtag">#さつまみっけ</div></div>
+      <div class="sns-box">Instagram埋め込み想定<div class="hashtag">#さつまみっけ</div></div>
+      <div class="sns-box">LINE公式アカウント誘導枠</div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h5>関連リンク</h5>
+        <a href="#">さつま町公式サイト</a>
+        <a href="#">かごしま移住ネット</a>
+        <a href="#">さつま町観光協会</a>
+      </div>
+      <div>
+        <h5>近隣自治体</h5>
+        <a href="#">薩摩川内市</a>
+        <a href="#">長島町</a>
+        <a href="#">阿久根市</a>
+      </div>
+      <div>
+        <h5>投稿について</h5>
+        <a href="#">投稿ガイドライン</a>
+        <a href="#">掲載基準・NGワードポリシー</a>
+        <a href="#">通報窓口</a>
+      </div>
+      <div>
+        <h5>サイトについて</h5>
+        <a href="#">運営について</a>
+        <a href="#">プライバシーポリシー</a>
+        <a href="#">お問い合わせ</a>
+      </div>
+    </div>
+    <div>Copyright © さつまみっけ運営（仮）</div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('audienceNav');
+  const feedItems = document.querySelectorAll('#feed .feed-item');
+  nav.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    nav.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const a = btn.dataset.a;
+    feedItems.forEach(item=>{
+      const tags = item.dataset.tags.split(' ');
+      item.classList.toggle('dim', !tags.includes(a));
+    });
+  });
+  document.querySelectorAll('.entry-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      nav.querySelector(`button[data-a="${card.dataset.a}"]`).click();
+      document.querySelector('#feed').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+</script>
+
+</body>
+</html>
