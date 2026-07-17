@@ -11,16 +11,20 @@ async function main() {
   console.log('HTTPステータス:', res.status);
   const xml = await res.text();
   console.log('取得した文字数:', xml.length);
-  console.log('先頭300文字:', xml.slice(0, 300));
 
   const items = [];
-  const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+  // <item> だけでなく <item rdf:about="..."> のような属性付きにも対応
+  const itemRegex = /<item\b[^>]*>([\s\S]*?)<\/item>/g;
   let match;
   while ((match = itemRegex.exec(xml)) !== null) {
     const block = match[1];
     const title = (block.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
     const link = (block.match(/<link>([\s\S]*?)<\/link>/) || [])[1] || '';
-    const pubDate = (block.match(/<pubDate>([\s\S]*?)<\/pubDate>/) || [])[1] || '';
+    // RSS2.0の<pubDate>、RSS1.0の<dc:date>の両方に対応
+    const pubDate =
+      (block.match(/<pubDate>([\s\S]*?)<\/pubDate>/) || [])[1] ||
+      (block.match(/<dc:date>([\s\S]*?)<\/dc:date>/) || [])[1] || '';
+
     items.push({
       title: title.replace('<![CDATA[', '').replace(']]>', '').trim(),
       link: link.trim(),
