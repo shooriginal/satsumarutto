@@ -387,7 +387,7 @@
     });
   });
 </script>
-<script>
+   <script>
   fetch('./data/news.json')
     .then(res => res.json())
     .then(items => {
@@ -404,6 +404,5 @@
       `).join('');
     })
     .catch(err => console.log('新着情報の取得に失敗しました', err));
-</script>
 </body>
 </html>
