@@ -387,6 +387,23 @@
     });
   });
 </script>
-
+<script>
+  fetch('./data/news.json')
+    .then(res => res.json())
+    .then(items => {
+      if (!items.length) return;
+      const feed = document.getElementById('feed');
+      feed.innerHTML = items.map(item => `
+        <div class="feed-item" data-tags="">
+          <div class="thumb">📰</div>
+          <div class="feed-body">
+            <div class="date">${item.pubDate ? new Date(item.pubDate).toLocaleDateString('ja-JP') : ''}</div>
+            <h4><a href="${item.link}" target="_blank" rel="noopener">${item.title}</a></h4>
+          </div>
+        </div>
+      `).join('');
+    })
+    .catch(err => console.log('新着情報の取得に失敗しました', err));
+</script>
 </body>
 </html>
